@@ -185,4 +185,82 @@ MyPromise.deferred = function () {
   return result;
 };
 
+MyPromise.resolve = function (parameter) {
+  if (parameter instanceof MyPromise) {
+    return parameter;
+  }
+  return new MyPromise((resolve) => {
+    resolve(parameter);
+  });
+};
+
+MyPromise.reject = function (reason) {
+  return new Promise((resolve, reject) => {
+    reject(reason);
+  });
+};
+
+MyPromise.all = function (promiseList) {
+  var promise = new MyPromise((resolve, reject) => {
+    var count = 0;
+    var length = promiseList.length;
+    var result = [];
+    if (length === 0) {
+      return resolve(result);
+    }
+    promiseList.forEach((promise, index) => {
+      MyPromise.resolve(promise).then(
+        (data) => {
+          count++;
+          result[index] = data;
+          if (count === length) {
+            return resolve(result);
+          }
+        },
+        (e) => {
+          reject(e);
+        }
+      );
+    });
+  });
+  return promise;
+};
+
+MyPromise.race = function (promiseList) {
+  var resPromise = new MyPromise((resolve, reject) => {
+    var length = promiseList.length;
+    if (length === 0) {
+      resolve();
+    } else {
+      for (var i = 0; i < length; i++) {
+        MyPromise.resolve(promiseList[i]).then(
+          function (value) {
+            return resolve(value);
+          },
+          function (reason) {
+            return reject(reason);
+          }
+        );
+      }
+    }
+  });
+  return resPromise;
+};
+
+MyPromise.prototype.catch = function (onRejected) {
+  this.then(null, onRejected);
+};
+
+MyPromise.prototype.finally = function(fn) {
+    return this.then(function(value) {
+        return MyPromise.resolve(fn()).then(function() {
+            return value;
+        }, function(e) {
+            return MyPromise.resolve(fn()).then(function() {
+                throw e;
+            })
+        })
+    })
+}
+
 module.exports = MyPromise;

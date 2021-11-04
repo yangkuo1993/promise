@@ -1,0 +1,23 @@
+{
+  "name": "promise",
+  "version": "1.0.0",
+  "description": "promiseA+",
+  "main": "index.js",
+  "scripts": {
+    "test": "promises-aplus-tests promise"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangkuo1993/promise.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yangkuo1993/promise/issues"
+  },
+  "homepage": "https://github.com/yangkuo1993/promise#readme",
+  "dependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}
